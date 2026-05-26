@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تولدت مبارک عشقم</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet"
+        type="text/css" />
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .step {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 350px;
+        }
+
+        .active {
+            display: flex;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        h1 {
+            font-family: 'Lalezar', cursive;
+            color: #d63384;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-family: 'Vazirmatn', sans-serif;
+            color: #495057;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .emoji {
+            font-size: 60px;
+            margin: 15px 0;
+            animation: bounce 2s infinite;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1.1rem;
+            font-family: 'Vazirmatn', sans-serif;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            transition: transform 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .cake-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 20px auto;
+        }
+
+        .cake {
+            font-size: 110px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .candle {
+            font-size: 50px;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            transition: opacity 0.5s, transform 0.5s;
+            filter: drop-shadow(0 0 10px orange);
+            /* درخشش شمع */
+        }
+
+        .candle.burning {
+            opacity: 1;
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        .candle.out {
+            opacity: 0;
+            transform: translateX(-50%) scale(0.5);
+            filter: none;
+        }
+
+        .mic-btn {
+            background: #4ecdc4;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 35px;
+            margin: 20px auto;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .mic-btn.recording {
+            background: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+
+        .knife {
+            font-size: 70px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            opacity: 0;
+            transition: all 0.8s;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .knife.visible {
+            opacity: 1;
+            top: 40%;
+        }
+
+        .knife.cut {
+            top: 60%;
+            transform: translate(-50%, -50%) rotate(0deg) scale(1.2);
+        }
+
+        .final-photo {
+            width: 100%;
+            border-radius: 15px;
+            margin-top: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            border: 5px solid white;
+        }
+
+        .message {
+            font-size: 1.1rem;
+            color: #555;
+            margin-top: 15px;
+            line-height: 1.8;
+        }
+
+        .love-text {
+            font-family: 'Lalezar', cursive;
+            font-size: 1.8rem;
+            color: #d63384;
+            margin-top: 20px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- موزیک پس‌زمینه -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- صدای دست و هورا -->
+    <audio id="cheerSound">
+        <source src="https://www.soundjay.com/human/sounds/applause-01.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <!-- Step 0: Start -->
+        <div id="step0" class="step active">
+            <div class="emoji">🎁</div>
+            <h1>یه سورپرایز برات دارم</h1>
+            <p style="color: #666;">برای شروع دکمه زیر رو بزن</p>
+            <button onclick="startExperience()">شروع کن 🚀</button>
+        </div>
+
+        <!-- Step 1: Intro -->
+        <div id="step1" class="step">
+            <div class="emoji">🐥</div>
+            <h1>سلام جوجوکم</h1>
+            <p style="color: #666;">دارم یه چیز خاص برات آماده می‌کنم...</p>
+        </div>
+
+        <!-- Step 2: Birthday Wish -->
+        <div id="step2" class="step">
+            <div class="emoji">❤️🫡</div>
+            <h1>تولدت مبارک پناه مننننن</h1>
+            <button onclick="nextStep(3)">ادامه</button>
+        </div>
+
+        <!-- Step 3: Make a Wish -->
+        <div id="step3" class="step">
+            <h2>چشماتو ببند و آرزو کن 🌟</h2>
+            <p style="color: #666;">روی دکمه زیر بزن وقتی آماده‌ای</p>
+            <button onclick="nextStep(4)">آرزو کردم!</button>
+        </div>
+
+        <!-- Step 4: Blow Candle & Cut Cake -->
+        <div id="step4" class="step">
+            <h2>حالا شمع‌ها رو فوت کن! 🎂</h2>
+            <div class="cake-container">
+                <!-- شمع روی کیک (از اول روشن) -->
+                <div id="candle" class="candle burning">🕯️</div>
+                <div class="cake">🎂</div>
+                <div id="knife" class="knife">🔪</div>
+            </div>
+
+            <div id="micArea">
+                <div id="micBtn" class="mic-btn" onclick="toggleRecording()">🎤</div>
+                <p id="recordingText" style="display:none; color:#ff6b6b; font-weight:bold;">نگه دار و فوت کن!</p>
+            </div>
+        </div>
+
+        <!-- Step 5: Final Message -->
+        <div id="step5" class="step">
+            <h1>بازم تولدت مبارک عشقم ❤️</h1>
+            <img src="photo.jpg" alt="ما دو نفر" class="final-photo">
+            <p class="message">باز ببخشید در شانت نبود 🫡❤️</p>
+            <p class="love-text">خیلی دوست دارم ❤️</p>
+        </div>
+    </div>
+
+    <script>
+        let isRecording = false;
+        let mediaRecorder;
+
+        // شروع تجربه
+        function startExperience() {
+            const bgMusic = document.getElementById('bgMusic');
+            bgMusic.volume = 0.5;
+            bgMusic.play().catch(e => console.log("Music play failed:", e));
+
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        window.microphoneStream = stream;
+                    })
+                    .catch(err => {
+                        console.error("Microphone access denied:", err);
+                    });
+            }
+
+            nextStep(1);
+        }
+
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step' + stepNumber).classList.add('active');
+
+            if (stepNumber === 2) {
+                fireConfetti();
+            }
+        }
+
+        function fireConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInOut(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function () {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        async function toggleRecording() {
+            const micBtn = document.getElementById('micBtn');
+            const recordingText = document.getElementById('recordingText');
+            const candle = document.getElementById('candle');
+            const knife = document.getElementById('knife');
+            const micArea = document.getElementById('micArea');
+            const cheerSound = document.getElementById('cheerSound');
+
+            if (!isRecording) {
+                try {
+                    let stream = window.microphoneStream;
+                    if (!stream) {
+                        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                        window.microphoneStream = stream;
+                    }
+
+                    mediaRecorder = new MediaRecorder(stream);
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    micBtn.classList.add('recording');
+                    recordingText.style.display = 'block';
+
+                    mediaRecorder.onstop = () => {
+                        isRecording = false;
+                        micBtn.classList.remove('recording');
+                        recordingText.style.display = 'none';
+
+                        // خاموش شدن شمع (همون شمع روی کیک)
+                        candle.classList.remove('burning');
+                        candle.classList.add('out');
+
+                        // پخش صدای دست و هورا
+                        cheerSound.currentTime = 0;
+                        cheerSound.play().catch(e => console.log("Cheer sound failed:", e));
+
+                        // کاغذ رنگی اول
+                        fireConfetti();
+
+                        // نمایش چاقو
+                        setTimeout(() => {
+                            micArea.style.display = 'none';
+                            knife.classList.add('visible');
+                            document.querySelector('#step4 h2').innerText = "حالا کیک رو ببر! 🔪";
+                        }, 1000);
+                    };
+
+                } catch (err) {
+                    alert("لطفا دسترسی به میکروفون رو بده!");
+                    console.error(err);
+                }
+            } else {
+                mediaRecorder.stop();
+            }
+        }
+
+        document.getElementById('knife').addEventListener('click', function () {
+            const knife = document.getElementById('knife');
+            const cheerSound = document.getElementById('cheerSound');
+
+            knife.classList.add('cut');
+
+            cheerSound.currentTime = 0;
+            cheerSound.play().catch(e => console.log("Cheer sound failed:", e));
+
+            fireConfetti();
+
+            setTimeout(() => {
+                nextStep(5);
+            }, 1500);
+        });
+
+        setTimeout(() => {
+            nextStep(2);
+        }, 5000);
+
+    </script>
+
+</body>
+
+</html>
